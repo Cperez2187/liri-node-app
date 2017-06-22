@@ -1,16 +1,22 @@
 // Get access to API keys data
 const API_ACCESS = require('./keys.js');
+
+// Load all modules needed
 const Twitter = require('twitter');
 const Spotify = require('node-spotify-api');
 const request = require('request');
 const fs = require('fs');
 
-// twitter
-
-// Get command from user
-const command = process.argv[2];
+// Get all command line arguments
+const nodeArgs = process.argv;
+// Get command input
+const command = nodeArgs[2];
 // Get song or movie input for Spotify or OMDB commands 
-const title = process.argv[3];
+let title = '';
+// Capture all the words in the title (ignoring the 1st 3 node arguments)
+for (let i = 3; i < nodeArgs.length; i++) {
+	title = `${title} ${nodeArgs[i]}`;
+}
 // test
 console.log(command);
 console.log(title);
@@ -42,7 +48,24 @@ function spotifyThisSong(songName) {
 	spotify
 		.search({type: 'track', query: songName, limit: 1})
 		.then(response => {
-			console.log(response);
+			let trackInfo = response.tracks.items[0];
+
+			// Set up artists display
+			const artists = trackInfo.artists; // array
+			let artistDisplay = '';
+			// Loop through artists array
+			artists.forEach(artist => {
+				if (artist === artists[artists.length-1]) {
+					artistDisplay = artistDisplay + artist.name;
+				} else {
+					artistDisplay = artistDisplay + artist.name + ', ';
+				}
+			});
+			// Display track info in terminal
+			console.log(`Artist(s): ${artistDisplay}`);
+			console.log(`Song Name: ${trackInfo.name}`);
+			console.log(`Preview Link: ${trackInfo.preview_url}`);
+			console.log(`Album: ${trackInfo.album.name}`);
 		})
 		.catch(err => {
 			console.log('Error: ' + err);
@@ -66,10 +89,10 @@ function myTweets() {
 	// request
 	client.get('statuses/user_timeline', params, (error, tweets, response) => {
 		if (!error) {
-			console.log(`Last 20 tweets from @${params.screen_name} \n`);
+			console.log(`Last 20 tweets from @${params.screen_name} \n`)
 
 			for (let i = 0; i < 20; i++) {
-				console.log(`-${i+1}. ${tweets[i].text} \n`);
+				console.log(`-${i+1}. \nCreated at: ${tweets[i].created_at} \nTweet: ${tweets[i].text} \n`);
 			}
 		}
 	});
