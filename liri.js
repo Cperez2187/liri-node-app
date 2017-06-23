@@ -17,9 +17,6 @@ let title = '';
 for (let i = 3; i < nodeArgs.length; i++) {
 	title = (`${title} ${nodeArgs[i]}`).trim();
 }
-// test
-console.log(command);
-console.log(title);
 
 // Send command to Liri
 liriCommands(command, title);
@@ -64,8 +61,6 @@ function doWhatItSays() {
 		const dataArray = data.split(',');
 		const fileCommand = dataArray[0].trim();
 		const fileTitle = dataArray[1].trim();
-		console.log(`File command: ${fileCommand}`);
-		console.log(`File title: ${fileTitle}`);
 
 		// Run Liri commands with input from file
 		liriCommands(fileCommand, fileTitle);
@@ -191,9 +186,11 @@ function myTweets() {
 
 // Prints last 20 tweets
 function printTweets(tweets, screenName) {
+
 	console.log(`\nLast 20 tweets from @${screenName}`);
 	console.log('-----------------------------------');
 
+	// Loop trough 20 tweets and format
 	for (let i = 0; i < 20; i++) {
 		console.log(`-${i+1}. \nCreated at: ${tweets[i].created_at} \nTweet: ${tweets[i].text} \n`);
 	}
