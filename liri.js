@@ -15,7 +15,7 @@ const command = nodeArgs[2];
 let title = '';
 // Capture all the words in the title (ignoring the 1st 3 node arguments)
 for (let i = 3; i < nodeArgs.length; i++) {
-	title = `${title} ${nodeArgs[i]}`;
+	title = (`${title} ${nodeArgs[i]}`).trim();
 }
 // test
 console.log(command);
@@ -31,8 +31,40 @@ switch(command) {
 		spotifyThisSong(title);
 		break;
 
+	case 'movie-this':
+		movieThis(title);
+		break;
+
+	case 'do-what-it-says':
+		break;
+
 	default:
 		console.log(`${command} is not an accepted command.`);
+}
+
+
+
+// Use request module to get movie info from OMDB
+function movieThis(movieTitle) {
+
+	// Set default movie
+	if (movieTitle === '') {
+		movieTitle = 'Mr.Nobody';
+	}
+
+	const ombdApiKey = API_ACCESS.omdbKey.api_key;
+	const requestURL = `http://www.omdbapi.com/?apikey=${ombdApiKey}&t=${movieTitle}`;
+
+	// Make request to OMDB API 
+	request(requestURL, (error, response, body) => {
+		if (error) throw error;
+
+		// Convert the JSON string 'body' into JSON object
+		const movieInfo = JSON.parse(body);
+
+		// Print desired movie info
+		printMovieInfo(movieInfo);
+	});
 }
 
 
@@ -43,6 +75,11 @@ function spotifyThisSong(songName) {
 		id: API_ACCESS.spotifyKeys.client_ID,
 		secret: API_ACCESS.spotifyKeys.client_secret
 	});
+
+	// Default song if no song is provided
+	if (songName === '') {
+		songName = 'The Sign Ace of Base';
+	}
 
 	// make request to API (using Promises instead of callbacks)
 	spotify
@@ -97,3 +134,41 @@ function myTweets() {
 		}
 	});
 }
+
+// displays movie info using OMDB JSON object
+function printMovieInfo(movieInfo) {
+	console.log(`\nMovie Info`);
+	console.log(`--------------`);
+	console.log(`Title: ${movieInfo.Title}`);
+	console.log(`Year: ${movieInfo.Year}`);
+	console.log(`IMDB Rating: ${movieInfo.imdbRating}`);
+	console.log(`Rotten Tomatoes Rating: ${movieInfo.Ratings[1].Value}`);
+	console.log(`Country: ${movieInfo.Country}`);
+	console.log(`Language: ${movieInfo.Language}`);
+	console.log(`Plot: ${movieInfo.Plot}`);
+	console.log(`Actors: ${movieInfo.Actors}`);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
