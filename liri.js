@@ -27,19 +27,19 @@ function liriCommands(command, title) {
 
 	// Use switch statement to choose command
 	switch(command) {
-
+		// node liri.js my-tweets
 		case 'my-tweets': 
 			myTweets();
 			break;
-
+		// node liri.js spotify-this-song [song name]
 		case 'spotify-this-song':
 			spotifyThisSong(title);
 			break;
-
+		// node liri.js movie-this [movie title]
 		case 'movie-this':
 			movieThis(title);
 			break;
-
+		// node liri.js do-what-this 
 		case 'do-what-it-says':
 			doWhatItSays();
 			break;
